@@ -1,0 +1,272 @@
+Grammar
+
+    0 $accept: line_list $end
+
+    1 line_list: line
+    2          | line_list line
+
+    3 line: blocks CR
+
+    4 blocks: block
+    5       | block blocks
+
+    6 block: element
+    7      | link
+
+    8 link: '[' element ']' '(' LITERAL ')'
+
+    9 element: image
+   10        | LITERAL
+
+   11 image: IMAGE_OPEN LITERAL ']' '(' LITERAL ')'
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    '(' (40) 8 11
+    ')' (41) 8 11
+    '[' (91) 8
+    ']' (93) 8 11
+    error (256)
+    LITERAL <literal_value> (258) 8 10 11
+    IMAGE_OPEN (259) 11
+    CR (260) 3
+
+
+Nonterminals, with rules where they appear
+
+    $accept (10)
+        on left: 0
+    line_list (11)
+        on left: 1 2
+        on right: 0 2
+    line (12)
+        on left: 3
+        on right: 1 2
+    blocks <string_value> (13)
+        on left: 4 5
+        on right: 3 5
+    block <string_value> (14)
+        on left: 6 7
+        on right: 4 5
+    link <string_value> (15)
+        on left: 8
+        on right: 7
+    element <string_value> (16)
+        on left: 9 10
+        on right: 6 8
+    image <string_value> (17)
+        on left: 11
+        on right: 9
+
+
+State 0
+
+    0 $accept: • line_list $end
+
+    LITERAL     shift, and go to state 1
+    IMAGE_OPEN  shift, and go to state 2
+    '['         shift, and go to state 3
+
+    line_list  go to state 4
+    line       go to state 5
+    blocks     go to state 6
+    block      go to state 7
+    link       go to state 8
+    element    go to state 9
+    image      go to state 10
+
+
+State 1
+
+   10 element: LITERAL •
+
+    $default  reduce using rule 10 (element)
+
+
+State 2
+
+   11 image: IMAGE_OPEN • LITERAL ']' '(' LITERAL ')'
+
+    LITERAL  shift, and go to state 11
+
+
+State 3
+
+    8 link: '[' • element ']' '(' LITERAL ')'
+
+    LITERAL     shift, and go to state 1
+    IMAGE_OPEN  shift, and go to state 2
+
+    element  go to state 12
+    image    go to state 10
+
+
+State 4
+
+    0 $accept: line_list • $end
+    2 line_list: line_list • line
+
+    $end        shift, and go to state 13
+    LITERAL     shift, and go to state 1
+    IMAGE_OPEN  shift, and go to state 2
+    '['         shift, and go to state 3
+
+    line     go to state 14
+    blocks   go to state 6
+    block    go to state 7
+    link     go to state 8
+    element  go to state 9
+    image    go to state 10
+
+
+State 5
+
+    1 line_list: line •
+
+    $default  reduce using rule 1 (line_list)
+
+
+State 6
+
+    3 line: blocks • CR
+
+    CR  shift, and go to state 15
+
+
+State 7
+
+    4 blocks: block •
+    5       | block • blocks
+
+    LITERAL     shift, and go to state 1
+    IMAGE_OPEN  shift, and go to state 2
+    '['         shift, and go to state 3
+
+    $default  reduce using rule 4 (blocks)
+
+    blocks   go to state 16
+    block    go to state 7
+    link     go to state 8
+    element  go to state 9
+    image    go to state 10
+
+
+State 8
+
+    7 block: link •
+
+    $default  reduce using rule 7 (block)
+
+
+State 9
+
+    6 block: element •
+
+    $default  reduce using rule 6 (block)
+
+
+State 10
+
+    9 element: image •
+
+    $default  reduce using rule 9 (element)
+
+
+State 11
+
+   11 image: IMAGE_OPEN LITERAL • ']' '(' LITERAL ')'
+
+    ']'  shift, and go to state 17
+
+
+State 12
+
+    8 link: '[' element • ']' '(' LITERAL ')'
+
+    ']'  shift, and go to state 18
+
+
+State 13
+
+    0 $accept: line_list $end •
+
+    $default  accept
+
+
+State 14
+
+    2 line_list: line_list line •
+
+    $default  reduce using rule 2 (line_list)
+
+
+State 15
+
+    3 line: blocks CR •
+
+    $default  reduce using rule 3 (line)
+
+
+State 16
+
+    5 blocks: block blocks •
+
+    $default  reduce using rule 5 (blocks)
+
+
+State 17
+
+   11 image: IMAGE_OPEN LITERAL ']' • '(' LITERAL ')'
+
+    '('  shift, and go to state 19
+
+
+State 18
+
+    8 link: '[' element ']' • '(' LITERAL ')'
+
+    '('  shift, and go to state 20
+
+
+State 19
+
+   11 image: IMAGE_OPEN LITERAL ']' '(' • LITERAL ')'
+
+    LITERAL  shift, and go to state 21
+
+
+State 20
+
+    8 link: '[' element ']' '(' • LITERAL ')'
+
+    LITERAL  shift, and go to state 22
+
+
+State 21
+
+   11 image: IMAGE_OPEN LITERAL ']' '(' LITERAL • ')'
+
+    ')'  shift, and go to state 23
+
+
+State 22
+
+    8 link: '[' element ']' '(' LITERAL • ')'
+
+    ')'  shift, and go to state 24
+
+
+State 23
+
+   11 image: IMAGE_OPEN LITERAL ']' '(' LITERAL ')' •
+
+    $default  reduce using rule 11 (image)
+
+
+State 24
+
+    8 link: '[' element ']' '(' LITERAL ')' •
+
+    $default  reduce using rule 8 (link)
